@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/29 18:03:20 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/06/09 11:32:50 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/07/12 20:39:27 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,24 @@ int		ft_red_dl(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 	int		ret;
 	char	str[4096];
 
-	((void)cmd, (void)exec);
-	if (env->fd_backup[STDIN] != STDIN)
-	{
-		RN_ERR("Ambigous redirection! (<< %s ignored)\n", file->cde_name);
-		return (0);
-	}
+	((void)cmd, (void)exec, (void)env);
+	if ((env->fd_backup[STDIN] = dup(STDIN)) < 0)
+		return (RN_ERR("Cannot duplicate STDIN(0)!\n"), -1);
 	pipe(fd_pipe);
 	while (1)
 	{
 		ft_printf("%sheredoc>%s", BLUE, C_NONE);
-		if ((ret = read(STDIN, str, 4095)) <= 0)
+		if ((ret = read(STDIN, str, 4095)) < 0)
 			return (RN_ERR("Cannot read into STDIN!\n"), -1);
 		str[ret] = '\0';
-		if (ft_strcmp(str, file->cde_name) == 0)
+		if (ft_strcmp(str, file->cde_name) == 10)
 			break ;
 		else
 			ft_putstr_fd(str, fd_pipe[1]);
 	}
 	if (dup2(fd_pipe[0], STDIN) < 0)
-		return (ft_printf("Cannot create dup!"), -1);
-	return (close(fd_pipe[1]), 0);
+		return (RN_ERR("Cannot create dup!\n"), -1);
+	return (close(fd_pipe[1]), close(fd_pipe[0]), 0);
 }
 
 int		ft_red_l(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)

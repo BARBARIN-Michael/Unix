@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/06/09 11:40:30 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/07/14 14:24:47 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int				manage_cmd(t_env *env, t_exec exec)
 		ret = env->pipe[env->bfirst->operand]
 			(env, env->bfirst, NULL, exec);
 		error_management(env, ret);
-		return (0);
+		return (manage_fd(env, 2), 0);
 	}
 	while (tree != NULL)
 	{
@@ -97,12 +97,12 @@ char			*command_path(t_env *env, char *cmd)
 	char	**ptr;
 	size_t	i;
 
-	ptr = NULL;
-	path = (ft_strchr(cmd, '/') != NULL) ? cmd : NULL;
-	if (path == NULL && (ft_strncmp(cmd, "./", 2) == 0 || *cmd == '~'))
-		path = ft_strjoin(ft_get_env(env->envp, "HOME"), cmd);
 	i = 0;
-	if (path == NULL && (ptr = ft_strsplit(ft_get_env(env->envp, "PATH"), ':')))
+	if ((path = (ft_strchr(cmd, '/') != NULL) ? ft_strdup(cmd) : NULL))
+		return (path);
+	else if ((ft_strncmp(cmd, "./", 2) == 0 || *cmd == '~'))
+		return ((path = ft_strjoin(ft_get_env(env->envp, "HOME"), cmd)));
+	else if ((ptr = ft_strsplit(ft_get_env(env->envp, "PATH"), ':')))
 	{
 		while (ptr[i] != NULL)
 		{
@@ -113,9 +113,8 @@ char			*command_path(t_env *env, char *cmd)
 			++i;
 		}
 		ft_tabdel(ptr);
-		ptr = NULL;
 	}
 	else if (path != NULL && access(path, 0 | F_OK | X_OK) == 0)
-		return ((ptr = ptr ? ft_tabdel(ptr), NULL : NULL), path);
+		return (path);
 	return (NULL);
 }

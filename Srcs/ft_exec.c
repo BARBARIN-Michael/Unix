@@ -6,7 +6,7 @@
 /*   By: mbarbari <mbarbari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/04/08 14:25:50 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/06/09 15:50:18 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/07/12 21:02:31 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,14 @@ static int	ft_process(t_env *env)
 	pwd = ft_get_pwd();
 	environ = env->bfirst;
 	env->bfirst = NULL;
-	ft_set_env(&env->envp, "SHTXT",
-			ft_nstrrchr((const char *)pwd, '/', 1));
+	ft_set_env(&env->envp, "SHTXT", ft_nstrrchr((const char *)pwd, '/', 1));
 	ft_printf("[%s%s%s] %s%s%s> ", C_BLUE, ft_get_env(env->envp, "NBR_SHELL"),
 			C_NONE, C_CYAN, ft_get_env(env->envp, "SHTXT"), C_NONE);
 	if ((ret = read(STDIN, str, 4096)) >= 4095)
 		return (RN_ERR("Command too long to be parse!"), 0);
-	if (ret <= 0)
+	if (ret == 0)
+			return (0);
+	if (ret < 0)
 		return (RN_ERR("Cannot read command!"), 0);
 	str[ret] = '\0';
 	if (ft_strisempty(str) != 0)

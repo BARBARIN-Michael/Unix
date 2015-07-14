@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/04/16 17:59:25 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/05/29 16:53:24 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/07/14 14:15:23 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,10 @@ int			ft_buildin_cd(t_btree *btree, char **envp)
 	char	directory[DEFAULT_MAX_LENGHT_PATH];
 
 	(error = 0, getcwd(directory, DEFAULT_MAX_LENGHT_PATH));
-	if (btree->args_tab[1] == NULL)
-		return (RN_ERR("Need any arguement for command cd!\n"), -1);
 	if (ft_array_count((void **)btree->args_tab) > 2)
-		return (RN_ERR("Too many arguement for command cd!\n"), -1);
-	dir = handle_pwd(btree, btree->args_tab[1], envp);
+		return (RN_ERR("Too many arguements for command cd!\n"), -1);
+	dir = (btree->args_tab[1] == NULL) ? handle_pwd(btree, "~", envp) :
+		handle_pwd(btree, btree->args_tab[1], envp);
 	if (access(dir, 0 | F_OK) != 0)
 		return (RN_ERR("cd: %s: No such file of directory\n", dir), -1);
 	else if (access(dir, 0 | F_OK | R_OK) != 0)
