@@ -10,7 +10,8 @@ COMPILATEUR = gcc
 #COMPILATEUR = perl ~/script/colorgcc.pl
 
 # Options
-COPTIONS = -g -g3 -O0 -Wall -Wextra -Werror
+COPTIONS = -g -g3 -O0 
+#-Wall -Wextra -Werror
 
 DIR_LIB = ./Libs/
 

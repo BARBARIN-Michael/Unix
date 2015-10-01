@@ -6,7 +6,7 @@
 #    By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/03 14:48:04 by mbarbari          #+#    #+#              #
-#    Updated: 2015/06/09 17:19:56 by mbarbari         ###   ########.fr        #
+#    Updated: 2015/09/30 16:03:57 by mbarbari         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ OBJDIR = ./Objets
 
 LIBS = -L../libft/ -lft 
 INC =  -I ../libft/Include/
-CFLAGS += -O3 -Wall -Wextra -Werror -I ./Include/ $(INC)
+CFLAGS += -g -O0 -Wall -Wextra -Werror -I ./Include/ $(INC)
 
 SRCS =	Srcs/ft_printf.c \
 		Srcs/ft_setup.c \

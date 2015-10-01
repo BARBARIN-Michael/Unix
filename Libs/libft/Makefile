@@ -1,4 +1,4 @@
-#**************************************************************************** #
+#*************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Make                                               :+:      :+:    :+:    #
@@ -6,14 +6,14 @@
 #    By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/03 14:48:04 by mbarbari          #+#    #+#              #
-#    Updated: 2015/06/09 12:17:30 by mbarbari         ###   ########.fr        #
+#    Updated: 2015/09/30 15:49:44 by mbarbari         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = libft.a
 
-CFLAGS += -O3 -Wall -Wextra -Werror -I ./Include/ -I ./../libftprintf/Include
+CFLAGS += -g -O0 -Wall -Wextra -Werror -I ./Include/ -I ./../libftprintf/Include
 
 SRCS = 	Srcs/ft_bzero.c			\
 		Srcs/ft_memcpy.c		\

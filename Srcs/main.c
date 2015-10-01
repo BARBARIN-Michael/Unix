@@ -6,7 +6,7 @@
 /*   By: mbarbari <mbarbari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/04/08 14:12:32 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/05/31 15:46:01 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/09/30 15:52:56 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ int				main(int ac, char **av, char **envp)
 	env = ft_init_env(new_env);
 	ft_exec(&env);
 	ft_tabdel(env.envp);
+	free(env.envp);
 	return (0);
 }

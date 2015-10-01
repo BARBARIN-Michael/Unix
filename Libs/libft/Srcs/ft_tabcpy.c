@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/20 10:29:44 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/05/20 11:09:28 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/09/30 15:48:48 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	**ft_tabcpy_by_ptr(char **tab, size_t offset)
 
 	len = ft_array_count((void **)tab);
 	cpy = (char **)ft_memalloc(sizeof(char *) * (len + 1 + offset));
+	cpy[len + 1] = NULL;
 	while (len > -1)
 	{
 		cpy[len] = tab[len];

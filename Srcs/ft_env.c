@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/04/16 18:48:10 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/06/09 16:05:07 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/01 20:56:03 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,20 @@ void		ft_set_env(char ***envp, char *env, char *new)
 	char	**new_env;
 	int		len;
 
-	getenv = NULL;
-	if (!env || !new)
-	{
-		N_ERR("Setenv need two arguement!\n");
-		return ;
-	}
 	getenv = get_env(*envp, env, 0);
-	if (!(getenv))
+	if (!getenv)
 	{
+		if (!new)
+			return ;
 		len = ft_array_count((void **)*envp);
 		new_env = ft_tabcpy_by_ptr(*envp, 2);
 		new_env[len] = ft_multi_strjoin(3, env, "=", new);
-		new_env[len + 1] = NULL;
 		free(*envp);
 		*envp = new_env;
 		return ;
 	}
-	free(*getenv);
-	*getenv = ft_multi_strjoin(3, env, "=", new);
+		free(*getenv);
+		*getenv = ft_multi_strjoin(3, env, "=", new);
 }
 
 int			ft_unset_env(char ***envp, char *env)
@@ -67,9 +62,10 @@ int			ft_unset_env(char ***envp, char *env)
 
 	i = 0;
 	getenv = get_env(*envp, env, 0);
-	if (*envp[1] == NULL && ft_strcmp(*envp[0], env) == 0)
-		*envp[0] = NULL;
-	if (!getenv)
+	ft_strcmp(*envp[0], env);
+	if (envp[1] && *envp[1] == NULL && ft_strcmp(*envp[0], env) == 0)
+		return (*envp[0] = NULL, 0);
+	else if (!getenv)
 		return (RN_ERR("Environment variable does not exist !\n"), -1);
 	while (getenv[i] != NULL)
 	{
