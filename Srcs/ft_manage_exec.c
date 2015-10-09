@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/14 02:52:43 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/01 21:19:44 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/08 16:25:39 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,8 @@ int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec)
 	{
 		exec(fct, ft_star(env, tree->args_tab), env->envp);
 		(RN_ERR("Cannot exec function %s", tree->cde_name), exit(1));
+		return (0);
 	}
-	else
-	{
-		waitpid(pid, &status, WUNTRACED), free(fct);
-		return (test_exit(status));
-	}
-	return (0);
+	waitpid(pid, &status, WUNTRACED), free(fct);
+	return (test_exit(status));
 }

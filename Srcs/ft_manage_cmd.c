@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/01 22:42:38 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/09 13:44:59 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ int				manage_cmd(t_env *env, t_exec exec)
 	while (tree != NULL)
 	{
 		ret = env->pipe[tree->operand](env, env->bfirst, tree, exec);
+		if (tree && tree->operand == o_pipe)
+			break ;
 		error_management(env, ret);
 		if (ret < 0)
 			break ;
@@ -108,13 +110,14 @@ char			*command_path(t_env *env, char *cmd)
 		{
 			path = ft_multi_strjoin(3, ptr[i], "/", cmd);
 			if (access(path, 0 | F_OK | X_OK) == 0)
-				return (ft_tabdel(ptr), path);
+				return (ft_tabdel(ptr), free(ptr), path);
 			free(path);
 			++i;
 		}
 		ft_tabdel(ptr);
+		free(ptr);
 	}
 	else if (path != NULL && access(path, 0 | F_OK | X_OK) == 0)
-		return (path);
+		return (ft_tabdel(ptr), free(ptr), path);
 	return (NULL);
 }

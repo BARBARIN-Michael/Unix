@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/29 18:03:20 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/01 22:43:04 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/09 13:35:41 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,30 +17,27 @@ int		ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 	int		fd_save[2];
 	int		fd_pipe[2];
 
-while (file && file->operand == o_pipe)
-{
-	pipe(fd_pipe);
-	fd_save[0] = dup(STDOUT);
-	fd_save[1] = dup(STDIN);
-	ft_printf("toto\n");
-	if (fork() == 0)
+	while (file && file->operand == o_pipe)
 	{
-		close(fd_pipe[0]);
-		dup2(fd_pipe[1], STDOUT);
-		cmd != NULL ? ft_exec_str(env, cmd, exec) : exit(0);
-		exit(0);
+		pipe(fd_pipe);
+		(fd_save[0] = dup(STDOUT), fd_save[1] = dup(STDIN));
+		if (fork() == 0)
+		{
+			close(fd_pipe[0]);
+			dup2(fd_pipe[1], STDOUT);
+			cmd != NULL ? ft_exec_str(env, cmd, exec) : 0;
+			exit(0);
+		}
+		else
+		{
+				close(fd_pipe[1]);
+				dup2(fd_pipe[0], STDIN);
+				ft_exec_str(env, file, exec);
+				wait(NULL);
+		}
+		(file = file->left, cmd = NULL);
+		(dup2(fd_save[0], STDOUT), dup2(fd_save[1], STDIN));
 	}
-	else
-	{
-			close(fd_pipe[1]);
-			dup2(fd_pipe[0], STDIN);
-			ft_exec_str(env, file, exec);
-			wait(NULL);
-	}
-	dup2(fd_save[0], STDOUT), dup2(fd_save[1], STDIN);
-	file = file->left;
-			cmd = NULL;
-}
 	return (0);
 }
 
@@ -89,28 +86,6 @@ int		ft_red_l(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 	close(fd_file);
 	return (0);
 }
-
-//TODO
-//
-//	int		fd_file;
-//
-//	((void)cmd, (void)exec);
-//	if (env->fd_backup[STDOUT] != STDOUT)
-//	{
-//		RN_ERR("Ambigous redirection! (> %s ignored)\n", file->cde_name);
-//		return (0);
-//	}
-//	if ((env->fd_backup[STDOUT] = dup(STDOUT)) < 0)
-//		return (RN_ERR("Cannot duplicate STDIN(0)!\n"), -1);
-//	if ((fd_file = open(file->cde_name, OPTION_FILE | O_TRUNC, 0644)) < 0)
-//		return (RN_ERR("Cannot open file %s\n", file->cde_name), -1);
-//	if (dup2(fd_file, STDOUT) < 0)
-//		return (RN_ERR("Cannot create dup!\n"), -1);
-//	close(fd_file);
-//	return (0);
-//FIN TODO
-
-
 
 int		ft_red_r(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 {

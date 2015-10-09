@@ -6,14 +6,14 @@
 /*   By: mbarbari <mbarbari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/08 11:25:55 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/01/13 04:09:42 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/02 13:46:44 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 #include <stdio.h>
 
-long int ft_strtol(char *line)
+long int	ft_strtol(char *line)
 {
 	long int	rslt;
 	long int	*hexa;

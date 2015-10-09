@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/04/16 18:48:10 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/01 20:56:03 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/09 13:38:50 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void		ft_set_env(char ***envp, char *env, char *new)
 		*envp = new_env;
 		return ;
 	}
-		free(*getenv);
-		*getenv = ft_multi_strjoin(3, env, "=", new);
+	free(*getenv);
+	*getenv = ft_multi_strjoin(3, env, "=", new);
 }
 
 int			ft_unset_env(char ***envp, char *env)
