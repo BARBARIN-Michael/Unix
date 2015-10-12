@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/29 18:03:20 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/09 13:35:41 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/12 11:44:46 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,26 @@
 
 int		ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 {
-	int		fd_save[2];
-	int		fd_pipe[2];
+	pid_t			pid[256];
+	int				status;
+	int				error;
+	unsigned int	i;
 
+	i = 0;
+	error = 0;
+	pid[i] = ft_exec_str(env, cmd, exec, &pid[i]);
 	while (file && file->operand == o_pipe)
 	{
-		pipe(fd_pipe);
-		(fd_save[0] = dup(STDOUT), fd_save[1] = dup(STDIN));
-		if (fork() == 0)
-		{
-			close(fd_pipe[0]);
-			dup2(fd_pipe[1], STDOUT);
-			cmd != NULL ? ft_exec_str(env, cmd, exec) : 0;
-			exit(0);
-		}
-		else
-		{
-				close(fd_pipe[1]);
-				dup2(fd_pipe[0], STDIN);
-				ft_exec_str(env, file, exec);
-				wait(NULL);
-		}
-		(file = file->left, cmd = NULL);
-		(dup2(fd_save[0], STDOUT), dup2(fd_save[1], STDIN));
+		++i;
+		if (error = ft_exec_str(env, file, exec, &pid[i]) < 0)
+			return (error);
+		file = file->left;
 	}
-	return (0);
+	while (i > 0) {
+		waitpid(pid[i]);
+		--i;
+	}
+	return (error);
 }
 
 int		ft_red_dl(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)

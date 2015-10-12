@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/09 13:44:59 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/09 15:11:12 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,6 @@ void			error_management(t_env *env, int err)
 		if (env->bfirst->right->error == 0)
 			env->bfirst->right->error = err;
 	env->error = err;
-}
-
-static int		test_pipe(t_btree *tree)
-{
-	t_btree		*save;
-
-	save = tree;
-	while (save != NULL)
-	{
-		if (save->operand == o_pipe)
-			return (1);
-		save = save->left;
-	}
-	return (0);
 }
 
 static void		manage_fd(t_env *env, int state)
@@ -81,15 +67,13 @@ int				manage_cmd(t_env *env, t_exec exec)
 	while (tree != NULL)
 	{
 		ret = env->pipe[tree->operand](env, env->bfirst, tree, exec);
-		if (tree && tree->operand == o_pipe)
-			break ;
 		error_management(env, ret);
 		if (ret < 0)
 			break ;
+		if(tree->operand == o_pipe)
+			break ;
 		tree = tree->left;
 	}
-	if (test_pipe(env->bfirst) == 0 && ret >= 0)
-		ft_exec_str(env, env->bfirst, exec);
 	return (manage_fd(env, 2), ret);
 }
 

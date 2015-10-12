@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/30 14:28:26 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/06/09 17:29:42 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/12 11:42:30 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,7 @@ void		ft_printrev_btree(t_btree *tree);
 ** ****************************************************************************
 */
 void		ft_print_env(char **envp);
+int			test_exit(int status);
 
 /*
 ** ****************************************************************************
@@ -229,8 +230,7 @@ int			ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec);
 */
 void		error_management(t_env *env, int err);
 int			ft_execve(t_env *env, t_btree *tree);
-int			ft_str(t_env *e, t_btree *l_p, t_btree *r_p, t_exec exec);
-int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec);
+int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec, pid_t *pid);
 
 /*
 ** ****************************************************************************
