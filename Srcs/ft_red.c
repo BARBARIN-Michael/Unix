@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/29 18:03:20 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/12 11:44:46 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/15 19:40:32 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,49 @@
 
 int		ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 {
-	pid_t			pid[256];
+	t_tabpid		pid;
 	int				status;
 	int				error;
-	unsigned int	i;
 
-	i = 0;
-	error = 0;
-	pid[i] = ft_exec_str(env, cmd, exec, &pid[i]);
-	while (file && file->operand == o_pipe)
-	{
-		++i;
-		if (error = ft_exec_str(env, file, exec, &pid[i]) < 0)
+	ft_bzero(&pid, sizeof(pid));
+	if ((error = ft_exec_pipe(env, cmd, exec, &pid)) != 0)
+		return (error);
+/*	while (file && file->operand == o_pipe)
+		if ((error = ft_exec_pipe(env, file, exec, &pid)) < 0)
 			return (error);
-		file = file->left;
-	}
-	while (i > 0) {
-		waitpid(pid[i]);
-		--i;
+		else
+			file = file->left;
+*/
+	while (pid.id > 0)
+	{
+		waitpid(pid.pidbyfd[pid.id].pid, &status, 0);
+		ft_putstr_fd(C_BROWN"\n======== JE SUIS DANS PAPA ==========", STDERR);
+		close(pid.pidbyfd[pid.id].pipe[0]);
+		ft_putstr_fd(C_RED"\nClose pipe IN: ", STDERR);
+		ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
+
+		if (pid.id == 1) {
+			dup2(pid.pidbyfd[pid.id].pipe[1], STDIN);
+			ft_putstr_fd(C_CYAN"\nDup pipe IN: ", STDERR);
+			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
+			ft_putstr_fd(" dans fd : "C_NONE, STDERR);
+			ft_putstr_fd(ft_itoa(STDIN), STDERR);
+		}
+		else {
+			dup2(pid.pidbyfd[pid.id].pipe[1], pid.pidbyfd[pid.id - 1].pipe[1]);
+			ft_putstr_fd(C_CYAN"\nDup pipe IN: ", STDERR);
+			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
+			ft_putstr_fd(" dans fd : "C_NONE, STDERR);
+			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id - 1].pipe[1]), STDERR);
+		}
+		if ((error = test_exit(status)) != 0)
+			while (pid.id > 0)
+			(kill(pid.pidbyfd[pid.id - 1].pid, SIGKILL), --pid.id);
+		dup2(pid.pidbyfd[pid.id - 1].pipe[0], pid.pidbyfd[pid.id - 2].pipe[0]);
+		dup2(pid.pidbyfd[pid.id - 1].pipe[1], pid.pidbyfd[pid.id - 2].pipe[1]);
+		--pid.id;
+		if (pid.id == 0)
+			break ;
 	}
 	return (error);
 }

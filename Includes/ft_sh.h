@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/30 14:28:26 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/12 11:42:30 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/15 18:49:43 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@
 
 # define SIGNAL singleton_signal()
 
+typedef enum e_operand		t_operand;
 typedef struct s_env		t_env;
 typedef struct s_btree		t_btree;
-typedef enum e_operand		t_operand;
+typedef struct s_pidbyfd	t_pidbyfd;
+typedef struct s_tabpid		t_tabpid;
 typedef struct s_lst_bdin	t_lst_bdin;
 
 enum		e_operand
@@ -62,6 +64,19 @@ typedef int	(*t_exec)(const char *cmd, char *const args[],
 									char *const envp[]);
 typedef int	(*t_pipeline)(t_env *env, t_btree *l, t_btree *r,
 										t_exec exec);
+
+struct		s_pidbyfd
+{
+	int							id_pid;
+	pid_t						pid;
+	int							pipe[2];
+};
+
+struct		s_tabpid
+{
+	int							id;
+	t_pidbyfd					pidbyfd[256];
+};
 
 struct		s_btree
 {
@@ -230,7 +245,9 @@ int			ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec);
 */
 void		error_management(t_env *env, int err);
 int			ft_execve(t_env *env, t_btree *tree);
-int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec, pid_t *pid);
+int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec);
+int			ft_exec_pipe(t_env *env, t_btree *tree, t_exec exec, t_tabpid *pid);
+int			ft_str(t_env *env, t_btree *l, t_btree *r, t_exec exec);
 
 /*
 ** ****************************************************************************
@@ -239,4 +256,13 @@ int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec, pid_t *pid);
 */
 int			ft_writefile(t_env *env, t_btree *r_part, int fd, t_uint o_mod);
 int			ft_microshell(t_env *env, t_btree *r_part, int fd);
+
+/*
+** ****************************************************************************
+** ft_error.c
+** ****************************************************************************
+*/
+int			test_exit(int status);
+void		ft_printerr(t_env *env, t_btree *tree);
+
 #endif

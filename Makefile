@@ -66,6 +66,7 @@ SRC =	$(SRCDIR)/ft_setup.c				\
 		$(SRCDIR)/ft_manage_cmd.c			\
 		$(SRCDIR)/ft_manage_exec.c			\
 		$(SRCDIR)/ft_star.c					\
+		$(SRCDIR)/ft_error.c				\
 
 
 
