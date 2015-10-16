@@ -6,7 +6,7 @@
 #    By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/03 14:48:04 by mbarbari          #+#    #+#              #
-#    Updated: 2015/09/30 16:03:57 by mbarbari         ###   ########.fr        #
+#    Updated: 2015/10/16 10:42:09 by mbarbari         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,8 +17,8 @@ CP = cp
 
 OBJDIR = ./Objets
 
-LIBS = -L../libft/ -lft 
-INC =  -I ../libft/Include/
+LIBS = -L ../libft/ -lft 
+INC  = -I ../libft/Include/
 CFLAGS += -g -O0 -Wall -Wextra -Werror -I ./Include/ $(INC)
 
 SRCS =	Srcs/ft_printf.c \
@@ -52,13 +52,14 @@ Objets:
 
 Objets/%.o: Srcs/%.c
 	@printf "\r\033[33;32mCompiling $<\n\033[33;0m"
-	@$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	@$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(INC) $(LIBS) 
 
 $(LIBFT_PATH)/libft.a:
 		@$(MAKE) -C $(LIBFT_PATH)
 
-$(NAME): $(OBJS) 
+$(NAME): $(LIBFT_PATH)/libft.a $(OBJS) 
 	@printf "\r\033[33;40mCreate Library $(NAME)\n\033[33;0m"
+	$(CP) $(LIBFT_PATH)/libft.a $(NAME)
 	@$(AR) -rcs $(NAME) $^
 
 clean:

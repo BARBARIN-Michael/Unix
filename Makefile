@@ -112,7 +112,7 @@ install: faire_dossier cplib cp
 
 cp: $(OBJ)
 	@printf "\r\033[33;40mLinking $@, executable create\033[33;0m\n"
-	@$(COMPILATEUR) $(COPTIONS) -o $(EXEDIR)/$(EXECUTABLE) $(OBJ) $(LIB)
+	@$(COMPILATEUR) $(LIB) $(COPTIONS) -o $(EXEDIR)/$(EXECUTABLE) $(OBJ) $(LIB)
 	@echo "\033[33;32m OK\033[33;0m"
 
 # regle de compilation des sources
