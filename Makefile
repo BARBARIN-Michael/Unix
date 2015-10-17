@@ -63,6 +63,7 @@ SRC =	$(SRCDIR)/ft_setup.c				\
 		$(SRCDIR)/ft_parsing.c				\
 		$(SRCDIR)/ft_wh.c					\
 		$(SRCDIR)/ft_red.c					\
+		$(SRCDIR)/ft_pipe.c					\
 		$(SRCDIR)/ft_manage_cmd.c			\
 		$(SRCDIR)/ft_manage_exec.c			\
 		$(SRCDIR)/ft_star.c					\

@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/09 15:11:12 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/17 14:38:38 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,8 @@ int				manage_cmd(t_env *env, t_exec exec)
 	}
 	while (tree != NULL)
 	{
-		ret = env->pipe[tree->operand](env, env->bfirst, tree, exec);
 		error_management(env, ret);
-		if (ret < 0)
-			break ;
-		if(tree->operand == o_pipe)
+		if (ret < 0 || tree->operand == o_pipe)
 			break ;
 		tree = tree->left;
 	}

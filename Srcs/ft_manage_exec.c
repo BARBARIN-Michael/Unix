@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/14 02:52:43 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/16 17:33:57 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/17 14:28:51 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,16 @@ int			ft_str(t_env *env, t_btree *l, t_btree *r, t_exec exec)
 
 	error = 0;
 	(void)r;
-	error = ft_exec_str(env, l, exec);
-	return (error);
+	if ((pid = fork()) == -1)
+		return (RN_ERR("Cannot create new pipeline\n"), -1);
+	if (pid)
+	{
+		error = ft_exec_str(env, l, exec);
+		exit(0);
+	}
+	if (error)
+		return (error);
+	return (waitpid(pid, &status, WUNTRACED), test_exit(status));
 }
 
 int			ft_execve(t_env *env, t_btree *tree)
@@ -55,9 +63,7 @@ int			ft_execve(t_env *env, t_btree *tree)
 
 int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec)
 {
-	int			status;
 	char		*fct;
-	pid_t		pid;
 
 	if ((tree->error >= 1 && tree->operand == o_and_d) ||
 			(tree->error == 0 && tree->operand == o_pipe_d))
@@ -67,16 +73,6 @@ int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec)
 				free(fct), -1);
 	else if (!tree->args_tab)
 		return (RN_ERR("Table des arguements vide!"), free(fct), -1);
-	if (fork() == 0)
-	{
-		exec(fct, ft_star(env, tree->args_tab), env->envp);
-		return (RN_ERR("Cannot exec function %s", tree->cde_name), -1);
-	}
-	else
-		return (waitpid(pid, &status, WUNTRACED), free(fct), test_exit(status));
+	exec(fct, ft_star(env, tree->args_tab), env->envp);
 	return (free(fct), 0);
-}
-
-int			ft_exec_pipe(t_env *env, t_btree *tree, t_exec exec, t_tabpid *pid)
-{
 }
