@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/09 15:11:12 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/17 19:37:13 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void		manage_fd(t_env *env, int state)
 	int	i;
 
 	i = 0;
+	return ;
 	if (state == 1)
 	{
 		while (i < 3)

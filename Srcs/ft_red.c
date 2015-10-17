@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/29 18:03:20 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/15 19:40:32 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/17 19:33:35 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,36 @@ int		ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 	t_tabpid		pid;
 	int				status;
 	int				error;
+	t_btree			*tree;
+	int				i;
 
-	ft_bzero(&pid, sizeof(pid));
-	if ((error = ft_exec_pipe(env, cmd, exec, &pid)) != 0)
-		return (error);
-/*	while (file && file->operand == o_pipe)
-		if ((error = ft_exec_pipe(env, file, exec, &pid)) < 0)
-			return (error);
-		else
-			file = file->left;
-*/
-	while (pid.id > 0)
+	ft_bzero(&pid, sizeof(t_tabpid));
+	tree = cmd;
+	while (tree)
 	{
-		waitpid(pid.pidbyfd[pid.id].pid, &status, 0);
-		ft_putstr_fd(C_BROWN"\n======== JE SUIS DANS PAPA ==========", STDERR);
-		close(pid.pidbyfd[pid.id].pipe[0]);
-		ft_putstr_fd(C_RED"\nClose pipe IN: ", STDERR);
-		ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
-
-		if (pid.id == 1) {
-			dup2(pid.pidbyfd[pid.id].pipe[1], STDIN);
-			ft_putstr_fd(C_CYAN"\nDup pipe IN: ", STDERR);
-			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
-			ft_putstr_fd(" dans fd : "C_NONE, STDERR);
-			ft_putstr_fd(ft_itoa(STDIN), STDERR);
-		}
-		else {
-			dup2(pid.pidbyfd[pid.id].pipe[1], pid.pidbyfd[pid.id - 1].pipe[1]);
-			ft_putstr_fd(C_CYAN"\nDup pipe IN: ", STDERR);
-			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id].pipe[1]), STDERR);
-			ft_putstr_fd(" dans fd : "C_NONE, STDERR);
-			ft_putstr_fd(ft_itoa(pid.pidbyfd[pid.id - 1].pipe[1]), STDERR);
-		}
-		if ((error = test_exit(status)) != 0)
-			while (pid.id > 0)
-			(kill(pid.pidbyfd[pid.id - 1].pid, SIGKILL), --pid.id);
-		dup2(pid.pidbyfd[pid.id - 1].pipe[0], pid.pidbyfd[pid.id - 2].pipe[0]);
-		dup2(pid.pidbyfd[pid.id - 1].pipe[1], pid.pidbyfd[pid.id - 2].pipe[1]);
+		pipe(pid.pidbyfd[pid.id].pipe);
+		tree = tree->left;
+		++pid.id;
+	}
+	i = pid.id - 1;
+	while (cmd)
+	{
 		--pid.id;
-		if (pid.id == 0)
-			break ;
+		if ((error = ft_exec_pipe(env, cmd, exec, &pid)) < 0)
+			return (error);
+		cmd = cmd->left;
+	}
+	pid.id = i;
+	while (pid.id >= 0)
+	{
+		ft_printf(C_BLUE"Waiting for %d\n", pid.pidbyfd[pid.id].pid);
+		waitpid(pid.pidbyfd[pid.id].pid, &status, 0);
+		ft_printf(C_CYAN"DONE !\n");
+		//if ((error = test_exit(status)) != 0)
+		//	while (pid.id > 0)
+		//		(kill(pid.pidbyfd[pid.id - 1].pid, SIGKILL), --pid.id);
+		--pid.id;
+		ft_printf(C_GREEN"prepare to wait id[%d] = %d\n", pid.id, pid.pidbyfd[pid.id].pid);
 	}
 	return (error);
 }
