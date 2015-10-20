@@ -6,7 +6,7 @@
 #    By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/03 14:48:04 by mbarbari          #+#    #+#              #
-#    Updated: 2015/10/16 10:42:09 by mbarbari         ###   ########.fr        #
+#    Updated: 2015/10/20 11:50:38 by mbarbari         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,7 @@ Objets:
 
 Objets/%.o: Srcs/%.c
 	@printf "\r\033[33;32mCompiling $<\n\033[33;0m"
-	@$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(INC) $(LIBS) 
+	@$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
 $(LIBFT_PATH)/libft.a:
 		@$(MAKE) -C $(LIBFT_PATH)

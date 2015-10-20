@@ -6,7 +6,7 @@
 /*   By: mbarbari <mbarbari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/16 17:35:19 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/17 14:38:38 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/20 11:51:13 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,5 @@ int		ft_pipe(t_env *env, t_btree *cmd, t_btree *file, t_exec exec)
 	waitpid(pid, &status, 0);
 	if (cmd->left != NULL)
 		ft_pipe(env, cmd->left, NULL, exec);
+	return (0);
 }
