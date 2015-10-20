@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/30 14:28:26 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/15 18:49:43 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/20 16:56:18 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,16 @@ typedef int	(*t_pipeline)(t_env *env, t_btree *l, t_btree *r,
 
 struct		s_pidbyfd
 {
-	int							id_pid;
 	pid_t						pid;
 	int							pipe[2];
 };
 
 struct		s_tabpid
 {
+	int							stdin;
+	int							stdout;
 	int							id;
+	int							cmp;
 	t_pidbyfd					pidbyfd[256];
 };
 

@@ -6,7 +6,7 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/14 02:52:43 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/17 19:35:54 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/20 19:15:57 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,26 +55,31 @@ int			ft_execve(t_env *env, t_btree *tree)
 
 int			ft_exec_str(t_env *env, t_btree *tree, t_exec exec)
 {
-	int			status;
-	char		*fct;
-	pid_t		pid;
+	pid_t	pid;
+	int		status;
+	char	*fct;
 
 	if ((tree->error >= 1 && tree->operand == o_and_d) ||
 			(tree->error == 0 && tree->operand == o_pipe_d))
 		return (0);
-	else if (exec == &execve && !(fct = command_path(env, tree->cde_name)))
-		return (RN_ERR("Cannot find function %s\n", tree->cde_name),
-				free(fct), -1);
+	if (exec == &execve && !(fct = command_path(env, tree->cde_name)))
+	{
+		RN_ERR("Cannot find function %s\n", tree->cde_name), free(fct);
+		return (-1);
+	}
 	else if (!tree->args_tab)
 		return (RN_ERR("Table des arguements vide!"), free(fct), -1);
-	if (fork() == 0)
+	if ((pid = fork()) == 0)
 	{
 		exec(fct, ft_star(env, tree->args_tab), env->envp);
-		return (RN_ERR("Cannot exec function %s", tree->cde_name), -1);
+		(RN_ERR("Cannot execute function %s", tree->cde_name), exit(1));
 	}
 	else
-		return (waitpid(pid, &status, WUNTRACED), free(fct), test_exit(status));
-	return (free(fct), 0);
+	{
+		waitpid(pid, &status, WUNTRACED), free(fct);
+		return (test_exit(status));
+	}
+	return (0);
 }
 
 int			ft_exec_pipe(t_env *env, t_btree *tree, t_exec exec, t_tabpid *pid)
@@ -82,35 +87,16 @@ int			ft_exec_pipe(t_env *env, t_btree *tree, t_exec exec, t_tabpid *pid)
 	int			status;
 	char		*fct;
 	int			fdtmp;
+	int			cmp;
 
-
-	//Gestion d'erreur, sans interet dans notre test
 	if ((tree->error >= 1 && tree->operand == o_and_d) ||
 			(tree->error == 0 && tree->operand == o_pipe_d))
 		return (0);
-
-	//Recuperation de la commande executable, est tjs vrai dans notre test
 	else if (exec == &execve && !(fct = command_path(env, tree->cde_name)))
 		return (RN_ERR("Cannot find function %s\n", tree->cde_name),
 				free(fct), -1);
-
-	//Si pas d'arguement, sera tjs vrai dans le test
 	else if (!tree->args_tab)
 		return (RN_ERR("Table des arguements vide!"), free(fct), -1);
-
-	//Fonction qui nous interesse, cree un nouveau fork sur la nouvelle commande
-	else if ((pid->pidbyfd[pid->id].pid = fork()) == 0)
-	{
-		if (pid->id != 0) {
-			printf("stdin = %d\n", pid->pidbyfd[pid->id - 1].pipe[1]);
-			dup2(pid->pidbyfd[pid->id - 1].pipe[1], STDIN);
-		}
-		if (tree->left != NULL) {
-			printf("stdout = %d\n", pid->pidbyfd[pid->id].pipe[0]);
-			dup2(pid->pidbyfd[pid->id].pipe[0], STDOUT);
-		}
-		exec(fct, ft_star(env, tree->args_tab), env->envp);
-		return (RN_ERR("Cannot exec function %s", tree->cde_name), -1);
-	}
+	exec(fct, ft_star(env, tree->args_tab), env->envp);
 	return (0);
 }

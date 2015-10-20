@@ -6,12 +6,27 @@
 /*   By: mbarbari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/16 20:04:46 by mbarbari          #+#    #+#             */
-/*   Updated: 2015/10/17 19:37:13 by mbarbari         ###   ########.fr       */
+/*   Updated: 2015/10/20 19:27:03 by mbarbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_sh.h>
 #include <errno.h>
+
+
+static int		test_pipe(t_btree *tree)
+{
+	t_btree		*save;
+
+	save = tree;
+	while (save != NULL)
+	{
+		if (save->operand == o_pipe)
+			return (1);
+		save = save->left;
+	}
+	return (0);
+}
 
 void			error_management(t_env *env, int err)
 {
@@ -26,7 +41,6 @@ static void		manage_fd(t_env *env, int state)
 	int	i;
 
 	i = 0;
-	return ;
 	if (state == 1)
 	{
 		while (i < 3)
@@ -53,7 +67,7 @@ static void		manage_fd(t_env *env, int state)
 int				manage_cmd(t_env *env, t_exec exec)
 {
 	static t_uchar		is_setup = 0;
-	char				ret;
+	char				ret = 0;
 	t_btree				*tree;
 
 	manage_fd(env, 1);
@@ -63,18 +77,19 @@ int				manage_cmd(t_env *env, t_exec exec)
 		ret = env->pipe[env->bfirst->operand]
 			(env, env->bfirst, NULL, exec);
 		error_management(env, ret);
-		return (manage_fd(env, 2), 0);
+		return (0);
 	}
 	while (tree != NULL)
 	{
-		ret = env->pipe[tree->operand](env, env->bfirst, tree, exec);
+		if (env->bfirst->operand != o_pipe)
+			ret = env->pipe[tree->operand](env, env->bfirst, tree, exec);
 		error_management(env, ret);
 		if (ret < 0)
 			break ;
-		if(tree->operand == o_pipe)
-			break ;
 		tree = tree->left;
 	}
+	if (test_pipe(env->bfirst) == 0 && ret >= 0)
+		ft_exec_str(env, env->bfirst, exec);
 	return (manage_fd(env, 2), ret);
 }
 
