@@ -6,7 +6,7 @@ TYPE = algebre
 EXECUTABLE = ft_minishell1
 
 # Choix du compilateur :
-COMPILATEUR = gcc
+COMPILATEUR = clang
 #COMPILATEUR = perl ~/script/colorgcc.pl
 
 # Options
